@@ -2,7 +2,7 @@ version: 2
 jobs:
   
 
-   build-medium-arm64:
+  build-medium-arm64:
     machine:
       image: ubuntu-2004:202101-01
     resource_class: arm.medium
