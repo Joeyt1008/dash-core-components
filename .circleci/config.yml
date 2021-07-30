@@ -1,13 +1,6 @@
 version: 2
 jobs:
-  percy-finalize:
-    docker:
-      - image: percyio/agent
-        auth:
-          username: dashautomation
-          password: $DASH_PAT_DOCKERHUB
-    steps:
-      - run: percy finalize --all
+  
 
   lint-unit-39: &lint-unit
     working_directory: ~/project
@@ -42,27 +35,7 @@ jobs:
             npm ci
             npm run lint
 
-  lint-unit-36:
-    <<: *lint-unit
-    docker:
-      - image: circleci/python:3.6.13-stretch-node-browsers
-        auth:
-          username: dashautomation
-          password: $DASH_PAT_DOCKERHUB
-        environment:
-          PYTHON_VERSION: py36
-
-  lint-unit-27:
-    <<: *lint-unit
-    docker:
-      - image: circleci/python:2.7.18-stretch-node-browsers
-        auth:
-          username: dashautomation
-          password: $DASH_PAT_DOCKERHUB
-        environment:
-          PYTHON_VERSION: py27
-
-  build-dash-39: &build-dash
+   build-dash-39: &build-dash
     working_directory: ~/project
     docker:
       - image: circleci/python:3.9.2-buster-node-browsers
@@ -107,25 +80,6 @@ jobs:
           paths:
             - packages
 
-  build-dash-36:
-    <<: *build-dash
-    docker:
-      - image: circleci/python:3.6.13-stretch-node-browsers
-        auth:
-          username: dashautomation
-          password: $DASH_PAT_DOCKERHUB
-        environment:
-          PYTHON_VERSION: py36
-
-  build-dash-27:
-    <<: *build-dash
-    docker:
-      - image: circleci/python:2.7.18-stretch-node-browsers
-        auth:
-          username: dashautomation
-          password: $DASH_PAT_DOCKERHUB
-        environment:
-          PYTHON_VERSION: py27
 
   test-39: &test
     working_directory: ~/project
@@ -165,27 +119,7 @@ jobs:
       - store_artifacts:
           path: /tmp/dash_artifacts
 
-  test-36:
-    <<: *test
-    docker:
-      - image: circleci/python:3.6.13-stretch-node-browsers
-        auth:
-          username: dashautomation
-          password: $DASH_PAT_DOCKERHUB
-        environment:
-          PYTHON_VERSION: py36
-          PERCY_ENABLE: 0
 
-  test-27:
-    <<: *test
-    docker:
-      - image: circleci/python:2.7.18-stretch-node-browsers
-        auth:
-          username: dashautomation
-          password: $DASH_PAT_DOCKERHUB
-        environment:
-          PYTHON_VERSION: py27
-          PERCY_ENABLE: 0
 
 workflows:
   version: 2
@@ -196,22 +130,6 @@ workflows:
       - test-39:
           requires:
             - build-dash-39
-      - percy-finalize:
-          requires:
-            - test-39
 
-  python3.6:
-    jobs:
-      - lint-unit-36
-      - build-dash-36
-      - test-36:
-          requires:
-            - build-dash-36
 
-  python2.7:
-    jobs:
-      - lint-unit-27
-      - build-dash-27
-      - test-27:
-          requires:
-            - build-dash-27
+
